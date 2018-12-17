@@ -1,7 +1,8 @@
 Environment variables
+
 export ALIAS=huishao
 export SUBSCRIPTION_ID=c4528d9e-c99a-48bb-b12d-fde2176a43b8
-export LOCATION=eastus
+export LOCATION=southcentralus
 export DEPLOY_ENV=dev
 
 apt-get install jq

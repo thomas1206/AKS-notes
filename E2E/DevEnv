@@ -2,7 +2,48 @@ Environment variables
 
 export ALIAS=huishao
 export SUBSCRIPTION_ID=c4528d9e-c99a-48bb-b12d-fde2176a43b8
-export LOCATION=southcentralus
+export LOCATION=southeastasia
 export DEPLOY_ENV=dev
 
 apt-get install jq
+
+git clone https://msazure.visualstudio.com/DefaultCollection/One/_git/Compute-ContainerService
+git fetch origin
+git reset --hard origin/master
+git clean -f -d
+
+
+a_good_idea = Consider running
+
+  source "/home/thomas/src/Compute-ContainerService/tf2/_entrypoints/dev/bashrc/all.source.sh"
+
+or even
+
+  echo '[ -f "/home/thomas/src/Compute-ContainerService/tf2/_entrypoints/dev/bashrc/all.source.sh" ] && source "/home/thomas/src/Compute-ContainerService/tf2/_entrypoints/dev/bashrc/all.source.sh"' >> ~/.bashrc
+
+# Then you can interact with the various parts using e.g.
+kcx get pods --all-namespaces # get pods from the customer underlay, leaving KUBECONFIG alone
+                              # see also krp, khcp
+helmcx list # list helm releases on the underlay
+
+kset rp # set this shell's KUBECONFIG to the rp kubeconfig
+kset - # switch back to your previous kubeconfig
+
+#When you want to make a managedCluster you can just run
+
+dev_create_managedCluster foobar # creates a managedCluster named 'foobar' on your PAKS
+
+#then you can follow along by opening some splits and running
+
+rp_logs # to watch filtered and formatted sync and async RP logs (you may need to install https://github.com/wercker/stern first)
+hcp_loop_logs # to watch the hcp-loop process logs, formatted through jq
+dev_watch_managedCluster_arm_deployment foobar # stream the ARM deployment status using https://github.com/stuartleeks/az-cli-extension-show-deployment
+
+# when its done do
+dev_get_managedCluster_kubeconfig foobar > ~/.kube/config # and maybe `unset KUBECONFIG`
+
+# and when you're done just run
+dev_delete_managedCluster foobar
+
+# you can also run the e2e tests
+dev_run_e2e_tests
